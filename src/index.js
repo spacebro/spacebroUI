@@ -71,7 +71,6 @@ window.addEventListener('polymer-ready', function () {
 
   // Load empty graph
   editor.graph = new fbpGraph.Graph('graph', { caseSensitive: true });
-  console.log('case', editor.graph.caseSensitive)
 
   // Add node button
   var addnode = function (name) {
@@ -334,7 +333,9 @@ window.addEventListener('polymer-ready', function () {
 
   // Connect to spacebro
   spacebroClient.connect('localhost', 6060, {
-    clientName: "spacebroUI",
+    client: {
+      name: "spacebroUI"
+    },
     channelName: "media-stream"
   })
   spacebroClient.on('connect', function (data) {
@@ -406,7 +407,6 @@ window.addEventListener('polymer-ready', function () {
 
 
   editor.graph.on('addEdge', function (data) {
-    console.log(data)
     spacebroClient.emit('addConnections', getConnectionFromEdge(data))
   })
   editor.graph.on('removeEdge', function (data) {
