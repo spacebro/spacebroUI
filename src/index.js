@@ -115,12 +115,14 @@ window.addEventListener('polymer-ready', function () {
     var meta = { route: 2 };
     if (src && tgt) {
       var newEdge = editor.graph.addEdge(src.id, connection.src.eventName, tgt.id, connection.tgt.eventName, meta);
-      spacebroClient.on(connection.src.eventName, function (data) {
-        if (data._from === connection.src.clientName) {
-          editor.animateEdge(newEdge);
-          setTimeout(function () { editor.unanimateEdge(newEdge) }, 4000);
-        }
-      })
+      if (newEdge) {
+        spacebroClient.on(connection.src.eventName, function (data) {
+          if (data._from === connection.src.clientName) {
+            editor.animateEdge(newEdge);
+            setTimeout(function () { editor.unanimateEdge(newEdge) }, 4000);
+          }
+        })
+      }
     }
     return newEdge;
   }
