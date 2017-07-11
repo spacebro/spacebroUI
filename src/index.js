@@ -112,7 +112,6 @@ window.addEventListener('polymer-ready', function () {
   var addEdge = function (connection) {
     var nodes = editor.graph.nodes;
     var src = nodes.find(function (node) { return node.component === connection.src.clientName })
-    console.log(src)
     var tgt = nodes.find(function (node) { return node.component === connection.tgt.clientName })
     var meta = { route: 2 };
     if (src && tgt) {
@@ -334,7 +333,7 @@ window.addEventListener('polymer-ready', function () {
   resize();
 
   // Connect to spacebro
-  spacebroClient.connect('localhost', 8888, {
+  spacebroClient.connect('localhost', 6060, {
     clientName: "spacebroUI",
     channelName: "media-stream"
   })
@@ -343,52 +342,40 @@ window.addEventListener('polymer-ready', function () {
   })
 
   var getComponentFromClient = function (client) {
-    var component = {
-      name: client.clientName,
-      description: client.description,
-      icon: client.icon || 'eye',
-      inports: [],
-      outports: []
-    }
-    if (client.events) {
-      for (var keykey in client.events.inEvents) {
-        var inevent = client.events.inEvents[keykey]
-        component.inports.push({
-          'name': inevent.eventName,
-          'type': inevent.type
-        })
+    client.inports = []
+    client.outports = []
+      if (client.in) {
+        for (var keykey in client.in) {
+          var inevent = client.in[keykey]
+          client.inports.push({
+            'name': inevent.eventName,
+            'type':  inevent.type
+          })
+        }
       }
-      for (var keykey in client.events.outEvents) {
-        var outevent = client.events.outEvents[keykey]
-        component.outports.push({
-          'name': outevent.eventName,
-          'type': outevent.type
-        })
+      if (client.out) {
+        for (var keykey in client.out) {
+          var outevent = client.out[keykey]
+          client.outports.push({
+            'name': outevent.eventName,
+            'type':  outevent.type
+          })
+        }
       }
-    } else {
-      component.inports.push({
-        'name': 'in',
-        'type': 'all'
-      })
-      component.outports.push({
-        'name': 'out',
-        'type': 'all'
-      })
-    }
-    return component
+      return client
   }
 
   spacebroClient.on('clients', function (data) {
     for (var key in data) {
       var client = data[key]
-      editor.$.graph.library[client.clientName] = getComponentFromClient(client);
-      addnode(client.clientName);
+      editor.$.graph.library[client.name] = getComponentFromClient(client);
+      addnode(client.name);
     }
     spacebroClient.emit('getConnections')
   })
   spacebroClient.on('newClient', (client) => {
-    editor.$.graph.library[client.clientName] = getComponentFromClient(client);
-    addnode(client.clientName);
+    editor.$.graph.library[client.name] = getComponentFromClient(client);
+    addnode(client.name);
     spacebroClient.emit('getConnections')
   })
 
