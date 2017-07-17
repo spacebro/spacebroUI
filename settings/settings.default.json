@@ -1,0 +1,12 @@
+{
+  "service": {
+    "spacebro": {
+      "host": "localhost",
+      "port": 6060,
+      "client": {
+        "name": "spacebroUI"
+      },
+      "channelName": "media-stream"
+    }
+  }
+}

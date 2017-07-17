@@ -2,7 +2,7 @@
 
 require('hammerjs/hammer.min')
 window.TheGraph = require('the-graph')
-const spacebroClient = require('spacebro-client')
+const { SpacebroClient, setDefaultSettings } = require('spacebro-client')
 
 require('./styles/style.css')
 require('font-awesome/css/font-awesome.min.css')
@@ -333,13 +333,17 @@ window.addEventListener('polymer-ready', function () {
 
   resize()
 
+  setDefaultSettings(SETTINGS.service.spacebro, true)
   // Connect to spacebro
-  spacebroClient.connect('localhost', 6060, {
+  const spacebroClient = new SpacebroClient()
+  /*
+  client.connect('localhost', 6060, {
     client: {
       name: 'spacebroUI'
     },
     channelName: 'media-stream'
   })
+  */
   spacebroClient.on('connect', function (data) {
     spacebroClient.emit('getClients')
   })
