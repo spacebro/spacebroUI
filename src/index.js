@@ -74,7 +74,7 @@ window.addEventListener('polymer-ready', function () {
   editor.graph = new fbpGraph.Graph('graph', { caseSensitive: true })
 
   // Add node button
-  const addnode = function (name) {
+  function addnode (name) {
     const nodes = editor.graph.nodes
     const existing = nodes.find((node) => node.component === name)
     if (name !== 'spacebroUI' && !existing) {
@@ -95,7 +95,7 @@ window.addEventListener('polymer-ready', function () {
   document.getElementById('addnode').addEventListener('click', addnode)
 
   // Add edge button
-  const addedge = function (outNodeID) {
+  function addedge (outNodeID) {
     const nodes = editor.graph.nodes
     const len = nodes.length
     if (len < 1) { return }
@@ -109,7 +109,7 @@ window.addEventListener('polymer-ready', function () {
   }
   document.getElementById('addedge').addEventListener('click', addedge)
 
-  const addEdge = function (connection) {
+  function addEdge (connection) {
     const nodes = editor.graph.nodes
     const src = nodes.find((node) => node.component === connection.src.clientName)
     const tgt = nodes.find((node) => node.component === connection.tgt.clientName)
@@ -155,7 +155,7 @@ window.addEventListener('polymer-ready', function () {
   })
 
   // Load graph
-  const loadJSON = function () {
+  function loadJSON () {
     const graphData = `{
             "caseSensitive": false,
             "properties": {},
@@ -326,7 +326,7 @@ window.addEventListener('polymer-ready', function () {
   })
 
   // Resize to fill window and also have explicit w/h attributes
-  const resize = function () {
+  function resize () {
     editor.setAttribute('width', window.innerWidth)
     editor.setAttribute('height', window.innerHeight)
   }
@@ -349,7 +349,7 @@ window.addEventListener('polymer-ready', function () {
     spacebroClient.emit('getClients')
   })
 
-  const getComponentFromClient = function (client) {
+  function getComponentFromClient (client) {
     client.inports = []
     client.outports = []
     if (client.in) {
@@ -397,7 +397,7 @@ window.addEventListener('polymer-ready', function () {
     setTimeout(() => { editor.$.graph.triggerAutolayout() }, 100)
   })
 
-  const getConnectionFromEdge = function (data) {
+  function getConnectionFromEdge (data) {
     const nodes = editor.graph.nodes
     const connection = {
       src: {
