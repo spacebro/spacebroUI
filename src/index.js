@@ -76,7 +76,7 @@ window.addEventListener('polymer-ready', function () {
   // Add node button
   const addnode = function (name) {
     const nodes = editor.graph.nodes
-    const existing = nodes.find(function (node) { return node.component === name })
+    const existing = nodes.find((node) => node.component === name)
     if (name !== 'spacebroUI' && !existing) {
       const id = Math.round(Math.random() * 100000).toString(36)
       const component = Math.random() > 0.5 ? 'basic' : 'tall'
@@ -111,16 +111,16 @@ window.addEventListener('polymer-ready', function () {
 
   const addEdge = function (connection) {
     const nodes = editor.graph.nodes
-    const src = nodes.find(function (node) { return node.component === connection.src.clientName })
-    const tgt = nodes.find(function (node) { return node.component === connection.tgt.clientName })
+    const src = nodes.find((node) => node.component === connection.src.clientName)
+    const tgt = nodes.find((node) => node.component === connection.tgt.clientName)
     const meta = { route: 2 }
     if (src && tgt) {
       const newEdge = editor.graph.addEdge(src.id, connection.src.eventName, tgt.id, connection.tgt.eventName, meta)
       if (newEdge) {
-        spacebroClient.on(connection.src.eventName, function (data) {
+        spacebroClient.on(connection.src.eventName, (data) => {
           if (data._from === connection.src.clientName) {
             editor.animateEdge(newEdge)
-            setTimeout(function () { editor.unanimateEdge(newEdge) }, 4000)
+            setTimeout(() => { editor.unanimateEdge(newEdge) }, 4000)
           }
         })
         return newEdge
@@ -129,18 +129,18 @@ window.addEventListener('polymer-ready', function () {
   }
 
   // Autolayout button
-  document.getElementById('autolayout').addEventListener('click', function () {
+  document.getElementById('autolayout').addEventListener('click', () => {
     editor.triggerAutolayout()
   })
 
   // Random graph button
-  document.getElementById('random').addEventListener('click', function () {
+  document.getElementById('random').addEventListener('click', () => {
     for (let i = 0; i < 20; i++) {
       const node = addnode()
       addedge(node.id)
       addedge(node.id)
     }
-    setTimeout(function () {
+    setTimeout(() => {
       // b/c ports change
       editor.libraryRefresh()
       editor.triggerAutolayout()
@@ -148,7 +148,7 @@ window.addEventListener('polymer-ready', function () {
   })
 
   // Get graph button
-  document.getElementById('get').addEventListener('click', function () {
+  document.getElementById('get').addEventListener('click', () => {
     const graphJSON = JSON.stringify(editor.graph.toJSON(), null, 2)
     console.log(graphJSON)
     // you can use the var graphJSON to save the graph definition in a file/database
@@ -285,8 +285,7 @@ window.addEventListener('polymer-ready', function () {
             ]
           }`
     const fbpGraph = window.TheGraph.fbpGraph
-    // fbpGraph.graph.loadJSON(JSON.stringify(graphData), function(err, graph){
-    fbpGraph.graph.loadJSON(graphData, function (err, graph) {
+    fbpGraph.graph.loadJSON(graphData, (err, graph) => {
       if (err) {
         console.error('error loading graph: ' + err.toString())
         return
@@ -294,9 +293,7 @@ window.addEventListener('polymer-ready', function () {
       editor.graph = graph
     })
   }
-  document.getElementById('load').addEventListener('click', function () {
-    loadJSON()
-  })
+  document.getElementById('load').addEventListener('click', () => loadJSON())
   // loadJSON();
   /*
   const edges = editor.graph.edges;
@@ -320,11 +317,11 @@ window.addEventListener('polymer-ready', function () {
   }, 2014);
   */
   // Clear button
-  document.getElementById('clear').addEventListener('click', function () {
+  document.getElementById('clear').addEventListener('click', () => {
     editor.graph = new fbpGraph.Graph()
   })
   // Save button
-  document.getElementById('save').addEventListener('click', function () {
+  document.getElementById('save').addEventListener('click', () => {
     spacebroClient.emit('saveGraph', {})
   })
 
@@ -348,7 +345,7 @@ window.addEventListener('polymer-ready', function () {
     channelName: 'media-stream'
   })
   */
-  spacebroClient.on('connect', function (data) {
+  spacebroClient.on('connect', (data) => {
     spacebroClient.emit('getClients')
   })
 
@@ -390,35 +387,35 @@ window.addEventListener('polymer-ready', function () {
     spacebroClient.emit('getConnections')
   })
 
-  spacebroClient.on('connections', function (connections) {
+  spacebroClient.on('connections', (connections) => {
     for (const key in connections) {
       const connection = connections[key]
       if (connection.src && connection.src.eventName) {
         addEdge(connection)
       }
     }
-    setTimeout(function () { editor.$.graph.triggerAutolayout() }, 100)
+    setTimeout(() => { editor.$.graph.triggerAutolayout() }, 100)
   })
 
   const getConnectionFromEdge = function (data) {
     const nodes = editor.graph.nodes
     const connection = {
       src: {
-        clientName: nodes.find(function (node) { return node.id === data.from.node }).component,
+        clientName: nodes.find((node) => node.id === data.from.node).component,
         eventName: data.from.port
       },
       tgt: {
-        clientName: nodes.find(function (node) { return node.id === data.to.node }).component,
+        clientName: nodes.find((node) => node.id === data.to.node).component,
         eventName: data.to.port
       }
     }
     return connection
   }
 
-  editor.graph.on('addEdge', function (data) {
+  editor.graph.on('addEdge', (data) => {
     spacebroClient.emit('addConnections', getConnectionFromEdge(data))
   })
-  editor.graph.on('removeEdge', function (data) {
+  editor.graph.on('removeEdge', (data) => {
     spacebroClient.emit('removeConnections', getConnectionFromEdge(data))
   })
 })
