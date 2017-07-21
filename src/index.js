@@ -157,133 +157,133 @@ window.addEventListener('polymer-ready', function () {
   // Load graph
   function loadJSON () {
     const graphData = `{
-            "caseSensitive": false,
-            "properties": {},
-            "inports": {},
-            "outports": {},
-            "groups": [],
-            "processes": {
-              "etna-ysl": {
-                "component": "basic",
-                "metadata": {
-                  "label": "etna-ysl",
-                  "x": 144,
-                  "y": 0,
-                  "width": 72,
-                  "height": 72
-                }
-              },
-              "ysl-digital-studio": {
-                "component": "smilecooker",
-                "metadata": {
-                  "label": "ysl-digital-studio",
-                  "x": 0,
-                  "y": 0,
-                  "width": 72,
-                  "height": 72
-                }
-              },
-              "basic_rqa7f": {
-                "component": "basic",
-                "metadata": {
-                  "label": "media-manager",
-                  "x": 288,
-                  "y": 0,
-                  "width": 72,
-                  "height": 72
-                }
-              },
-              "basic_lnefv": {
-                "component": "basic",
-                "metadata": {
-                  "label": "altruist",
-                  "x": 288,
-                  "y": 144,
-                  "width": 72,
-                  "height": 72
-                }
-              },
-              "basic_c5cmg": {
-                "component": "basic",
-                "metadata": {
-                  "label": "ysl-library",
-                  "x": 432,
-                  "y": 0,
-                  "width": 72,
-                  "height": 72
-                }
-              }
-            },
-            "connections": [
-              {
-                "src": {
-                  "process": "ysl-digital-studio",
-                  "port": "out0"
-                },
-                "tgt": {
-                  "process": "etna-ysl",
-                  "port": "in"
-                }
-              },
-              {
-                "src": {
-                  "process": "etna-ysl",
-                  "port": "out"
-                },
-                "tgt": {
-                  "process": "ysl-digital-studio",
-                  "port": "in"
-                }
-              },
-              {
-                "src": {
-                  "process": "etna-ysl",
-                  "port": "out"
-                },
-                "tgt": {
-                  "process": "basic_rqa7f",
-                  "port": "in"
-                },
-                "metadata": {
-                  "route": 0
-                }
-              },
-              {
-                "src": {
-                  "process": "ysl-digital-studio",
-                  "port": "out1"
-                },
-                "tgt": {
-                  "process": "basic_lnefv",
-                  "port": "in"
-                }
-              },
-              {
-                "src": {
-                  "process": "basic_rqa7f",
-                  "port": "out"
-                },
-                "tgt": {
-                  "process": "basic_lnefv",
-                  "port": "in"
-                },
-                "metadata": {}
-              },
-              {
-                "src": {
-                  "process": "basic_rqa7f",
-                  "port": "out"
-                },
-                "tgt": {
-                  "process": "basic_c5cmg",
-                  "port": "in"
-                },
-                "metadata": {
-                  "route": 0
-                }
-              }
-            ]
-          }`
+      "caseSensitive": false,
+      "properties": {},
+      "inports": {},
+      "outports": {},
+      "groups": [],
+      "processes": {
+        "etna-ysl": {
+          "component": "basic",
+          "metadata": {
+            "label": "etna-ysl",
+            "x": 144,
+            "y": 0,
+            "width": 72,
+            "height": 72
+          }
+        },
+        "ysl-digital-studio": {
+          "component": "smilecooker",
+          "metadata": {
+            "label": "ysl-digital-studio",
+            "x": 0,
+            "y": 0,
+            "width": 72,
+            "height": 72
+          }
+        },
+        "basic_rqa7f": {
+          "component": "basic",
+          "metadata": {
+            "label": "media-manager",
+            "x": 288,
+            "y": 0,
+            "width": 72,
+            "height": 72
+          }
+        },
+        "basic_lnefv": {
+          "component": "basic",
+          "metadata": {
+            "label": "altruist",
+            "x": 288,
+            "y": 144,
+            "width": 72,
+            "height": 72
+          }
+        },
+        "basic_c5cmg": {
+          "component": "basic",
+          "metadata": {
+            "label": "ysl-library",
+            "x": 432,
+            "y": 0,
+            "width": 72,
+            "height": 72
+          }
+        }
+      },
+      "connections": [
+        {
+          "src": {
+            "process": "ysl-digital-studio",
+            "port": "out0"
+          },
+          "tgt": {
+            "process": "etna-ysl",
+            "port": "in"
+          }
+        },
+        {
+          "src": {
+            "process": "etna-ysl",
+            "port": "out"
+          },
+          "tgt": {
+            "process": "ysl-digital-studio",
+            "port": "in"
+          }
+        },
+        {
+          "src": {
+            "process": "etna-ysl",
+            "port": "out"
+          },
+          "tgt": {
+            "process": "basic_rqa7f",
+            "port": "in"
+          },
+          "metadata": {
+            "route": 0
+          }
+        },
+        {
+          "src": {
+            "process": "ysl-digital-studio",
+            "port": "out1"
+          },
+          "tgt": {
+            "process": "basic_lnefv",
+            "port": "in"
+          }
+        },
+        {
+          "src": {
+            "process": "basic_rqa7f",
+            "port": "out"
+          },
+          "tgt": {
+            "process": "basic_lnefv",
+            "port": "in"
+          },
+          "metadata": {}
+        },
+        {
+          "src": {
+            "process": "basic_rqa7f",
+            "port": "out"
+          },
+          "tgt": {
+            "process": "basic_c5cmg",
+            "port": "in"
+          },
+          "metadata": {
+            "route": 0
+          }
+        }
+      ]
+    }`
     const fbpGraph = window.TheGraph.fbpGraph
     fbpGraph.graph.loadJSON(graphData, (err, graph) => {
       if (err) {
@@ -295,27 +295,7 @@ window.addEventListener('polymer-ready', function () {
   }
   document.getElementById('load').addEventListener('click', () => loadJSON())
   // loadJSON();
-  /*
-  const edges = editor.graph.edges;
-  console.log(edges)
 
-  const animatingEdge1;
-  const animatingEdge2;
-  window.setInterval(function () {
-    if (!editor.graph) { return; }
-    if (animatingEdge2) {
-      editor.unanimateEdge(animatingEdge2);
-    }
-    if (animatingEdge1) {
-      animatingEdge2 = animatingEdge1;
-    }
-    const edges = editor.graph.edges;
-    if (edges.length>0) {
-      animatingEdge1 = edges[Math.floor(Math.random()*edges.length)];
-      editor.animateEdge(animatingEdge1);
-    }
-  }, 2014);
-  */
   // Clear button
   document.getElementById('clear').addEventListener('click', () => {
     editor.graph = new fbpGraph.Graph()
@@ -337,14 +317,7 @@ window.addEventListener('polymer-ready', function () {
   setDefaultSettings(SETTINGS.service.spacebro, true)
   // Connect to spacebro
   const spacebroClient = new SpacebroClient()
-  /*
-  client.connect('localhost', 6060, {
-    client: {
-      name: 'spacebroUI'
-    },
-    channelName: 'media-stream'
-  })
-  */
+
   spacebroClient.on('connect', (data) => {
     spacebroClient.emit('getClients')
   })
