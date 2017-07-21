@@ -79,10 +79,7 @@ window.addEventListener('polymer-ready', function () {
     const existing = nodes.find((node) => node.component === name)
     if (name !== 'spacebroUI' && !existing) {
       const id = Math.round(Math.random() * 100000).toString(36)
-      const component = Math.random() > 0.5 ? 'basic' : 'tall'
-      if (name) {
-        component = name
-      }
+      const component = name || Math.random() > 0.5 ? 'basic' : 'tall'
       const metadata = {
         label: component,
         x: Math.round(Math.random() * 800),
