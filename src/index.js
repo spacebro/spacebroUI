@@ -323,6 +323,10 @@ window.addEventListener('polymer-ready', function () {
   document.getElementById('clear').addEventListener('click', function () {
     editor.graph = new fbpGraph.Graph()
   })
+  // Save button
+  document.getElementById('save').addEventListener('click', function () {
+    spacebroClient.emit('saveGraph', {})
+  })
 
   // Resize to fill window and also have explicit w/h attributes
   var resize = function () {
