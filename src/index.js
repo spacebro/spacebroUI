@@ -47,10 +47,35 @@ window.addEventListener('polymer-ready', function () {
     graph.removeClients([ nodeData.metadata.label ], false, true)
   })
 
+  function _getNodeName (id) {
+    return editor.graph.nodes.find(node => node.id === id).metadata.label
+  }
+
+  function _getConnection (edge) {
+    const { from, to } = edge
+    return {
+      src: { clientName: _getNodeName(from.node), eventName: from.port },
+      tgt: { clientName: _getNodeName(to.node), eventName: to.port }
+    }
+  }
+
+  editor.graph.on('addEdge', (edge) => {
+    console.log('addEdge:', edge)
+    graph.addConnections([ _getConnection(edge) ], false, true)
+  })
+  editor.graph.on('removeEdge', (edge) => {
+    console.log('removeEdge:', edge)
+    graph.removeConnections([ _getConnection(edge) ], false, true)
+  })
+
   // From spacebro to CachedGraph
   client.on('clients', (clients) => {
     console.log('Setting clients:', clients)
     graph.setClients(clients, true, false)
+  })
+  client.on('connections', (connections) => {
+    console.log('Setting connections:', connections)
+    graph.setConnections(connections, true, false)
   })
 
   // From CachedGraph to spacebro
@@ -58,11 +83,21 @@ window.addEventListener('polymer-ready', function () {
     console.log('Emitting removeClients:', clientNames)
     client.emit('removeClients', clientNames)
   })
+  graph.on('sb-addConnections', (connections) => {
+    console.log('Emitting addConnections:', connections)
+    client.emit('addConnections', connections)
+  })
+  graph.on('sb-removeConnections', (connections) => {
+    console.log('Emitting removeConnections:', connections)
+    client.emit('removeConnections', connections)
+  })
 
   // From CachedGraph to UI
+
   function _addNode (clientName) {
     const id = Math.round(Math.random() * 100000).toString(36)
 
+    // TODO
     // return editor.graph.addNode(id, clientName, metadata = {
     return editor.graph.addNode(id, 'tall', {
       label: clientName,
@@ -72,12 +107,13 @@ window.addEventListener('polymer-ready', function () {
   }
 
   function _findNode (name) {
-    return editor.graph.nodes.find(nodeData => nodeData.metadata.label == name)
+    return editor.graph.nodes.find(nodeData => nodeData.metadata.label === name)
   }
 
   graph.on('ui-addClients', (clients) => {
     console.log('ui-addClients', clients)
     for (const client of clients) {
+      // editor.$.graph.library[client.name] = getComponentFromClient(client)
       if (client.name !== 'spacebroUI') {
         _addNode(client.name)
       }
@@ -91,12 +127,47 @@ window.addEventListener('polymer-ready', function () {
     }
   })
 
-  /*
-  editor.graph.on('addEdge', (data) => {
-    client.emit('addConnections', getConnectionFromEdge(data))
+  function _getEdge (connection, getId) {
+    let srcNode = _findNode(connection.src.clientName)
+    let tgtNode = _findNode(connection.tgt.clientName)
+
+    if (!srcNode || !tgtNode) {
+      return null
+    }
+    return [
+      srcNode.id,
+      connection.src.eventName,
+      tgtNode.id,
+      connection.tgt.eventName,
+    ]
+  }
+
+  graph.on('ui-addConnections', (connections) => {
+    console.log('ui-addConnections', connections)
+    for (const connection of connections) {
+      const edge = _getEdge(connection, true)
+
+      console.log('edge:', edge)
+      edge && editor.graph.addEdge(...edge, { route: 2 })
+    }
   })
-  editor.graph.on('removeEdge', (data) => {
-    client.emit('removeConnections', getConnectionFromEdge(data))
+  graph.on('ui-removeConnections', (connections) => {
+    console.log('ui-removeConnections', connections)
+    for (const connection of connections) {
+      const edge = _getEdge(connection, false)
+
+      edge && editor.graph.removeEdge(...edge)
+    }
+  })
+
+  // TODO
+  // ANIMATE CONNECTIONS
+  /*
+  spacebroClient.on(connection.src.eventName, (data) => {
+    if (data._from === connection.src.clientName) {
+      editor.animateEdge(newEdge)
+      setTimeout(() => { editor.unanimateEdge(newEdge) }, 4000)
+    }
   })
   */
 })
@@ -109,72 +180,38 @@ function setupSpacebro () {
   spacebroClient.on('connect', (data) => {
     spacebroClient.emit('getClients')
   })
+  spacebroClient.on('clients', (data) => {
+    spacebroClient.emit('getConnections')
+  })
   return spacebroClient
 }
 
+// TODO
 /*
-{
-  function getComponentFromClient (client) {
-    client.inports = []
-    client.outports = []
-    if (client.in) {
-      for (const keykey in client.in) {
-        const inevent = client.in[keykey]
-        client.inports.push({
-          'name': inevent.eventName,
-          'type': inevent.type
-        })
-      }
+function getComponentFromClient (client) {
+  client.inports = []
+  client.outports = []
+  if (client.in) {
+    for (const keykey in client.in) {
+      const inevent = client.in[keykey]
+      client.inports.push({
+        'name': inevent.eventName,
+        'type': inevent.type
+      })
     }
-    if (client.out) {
-      for (const keykeyout in client.out) {
-        const outevent = client.out[keykeyout]
-        client.outports.push({
-          'name': outevent.eventName,
-          'type': outevent.type
-        })
-      }
-    }
-    return client
   }
-
-  spacebroClient.on('clients', function (clients) {
-    console.log('Clients2: ', clients)
-    for (const key in clients) {
-      const client = clients[key]
-      editor.$.graph.library[client.name] = getComponentFromClient(client)
-      addnode(client.name)
+  if (client.out) {
+    for (const keykeyout in client.out) {
+      const outevent = client.out[keykeyout]
+      client.outports.push({
+        'name': outevent.eventName,
+        'type': outevent.type
+      })
     }
-    spacebroClient.emit('getConnections')
-  })
-
-  spacebroClient.on('connections', (connections) => {
-    for (const key in connections) {
-      const connection = connections[key]
-      if (connection.src && connection.src.eventName) {
-        addEdge(connection)
-      }
-    }
-    setTimeout(() => { editor.$.graph.triggerAutolayout() }, 100)
-  })
-
+  }
+  return client
 }
 */
-
-function getConnectionFromEdge (data) {
-  const nodes = editor.graph.nodes
-  const connection = {
-    src: {
-      clientName: nodes.find((node) => node.id === data.from.node).component,
-      eventName: data.from.port
-    },
-    tgt: {
-      clientName: nodes.find((node) => node.id === data.to.node).component,
-      eventName: data.to.port
-    }
-  }
-  return connection
-}
 
 function loadLibrary () {
   return {
