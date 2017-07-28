@@ -37,6 +37,21 @@ window.addEventListener('polymer-ready', function () {
   const client = setupSpacebro()
   const graph = new CachedGraph()
 
+  // Autolayout button
+  document.getElementById('autolayout').addEventListener('click', () => {
+    editor.triggerAutolayout()
+  })
+
+  // Save button
+  document.getElementById('save').addEventListener('click', () => {
+    client.emit('saveGraph', {})
+  })
+
+  // Clear button
+  document.getElementById('clear').addEventListener('click', () => {
+    graph.setConnections([], true, true)
+  })
+
   // From UI to CachedGraph
   editor.graph.on('addNode', (nodeData) => {
     console.log('Removing node:', nodeData)
