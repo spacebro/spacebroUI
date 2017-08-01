@@ -20,21 +20,6 @@ class CachedGraph extends EventEmitter {
     this._clients = {}
   }
 
-  /*
-  updateConnections (connections, compareCache) {
-    if (compareCache) {
-      for (const connection of _removed(this._connections, connections)) {
-        this.emit('removeConnection', connection)
-      }
-      for (const connection of _added(this._connections, connections)) {
-        this.emit('addConnection', connection)
-      }
-    }
-    // Deep copy
-    this._connections = connections.slice()
-  }
-  */
-
   addClients (clients, updateUi, updateSb) {
     const addedNames = _diff(Object.keys(this._clients), Object.keys(clients))
     const addedClients = addedNames.map(name => clients[name])
