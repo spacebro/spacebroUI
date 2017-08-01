@@ -49,9 +49,9 @@ class CachedGraph extends EventEmitter {
     const removedNames = _diff(Object.keys(clients), Object.keys(this._clients))
     const commonNames = _common(Object.keys(clients), Object.keys(this._clients))
 
-    const updatedClients = commonNames.filter(name =>
-      !deepEqual(clients[name], this._clients[name])
-    )
+    const updatedClients = commonNames
+      .filter(name => !deepEqual(clients[name], this._clients[name]))
+      .map(name => clients[name])
 
     this.addClients(clients, updateUi, updateSb)
     this.removeClients(removedNames, updateUi, updateSb)

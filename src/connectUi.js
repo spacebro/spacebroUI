@@ -7,12 +7,12 @@ function connectUi (editor, graph) {
     graph.removeClients([ nodeData.name ], false, true)
   })
   editor.graph.on('removeNode', (nodeData) => {
-    console.log('Removing node:', nodeData.metadata.label)
-    graph.removeClients([ nodeData.metadata.label ], false, true)
+    console.log('Removing node:', nodeData.clientName)
+    graph.removeClients([ nodeData.clientName ], false, true)
   })
 
   function _getNodeName (id) {
-    return editor.graph.nodes.find(node => node.id === id).metadata.label
+    return editor.graph.nodes.find(node => node.id === id).clientName
   }
 
   function _getConnection (edge) {
@@ -39,15 +39,17 @@ function connectUi (editor, graph) {
 
     // TODO
     // return editor.graph.addNode(id, clientName, metadata = {
-    return editor.graph.addNode(id, 'tall', {
+    const node = editor.graph.addNode(id, 'tall', {
       label: clientName,
       x: Math.round(Math.random() * 800),
       y: Math.round(Math.random() * 600)
     })
+    node.clientName = clientName
+    return node
   }
 
   function _findNode (name) {
-    return editor.graph.nodes.find(nodeData => nodeData.metadata.label === name)
+    return editor.graph.nodes.find(nodeData => nodeData.clientName === name)
   }
 
   graph.on('ui-addClients', (clients) => {
@@ -55,7 +57,23 @@ function connectUi (editor, graph) {
     for (const client of clients) {
       // editor.$.graph.library[client.name] = getComponentFromClient(client)
       if (client.name !== 'spacebroUI') {
-        _addNode(client.name)
+        const node = _addNode(client.name)
+
+        if (!client._isConnected) {
+          node.metadata.label = node.clientName + ' (offline)'
+        }
+      }
+    }
+  })
+  graph.on('ui-updateClients', (clients) => {
+    console.log('ui-updateClients', clients)
+    for (const client of clients) {
+      // editor.$.graph.library[client.name] = getComponentFromClient(client)
+      if (client.name !== 'spacebroUI') {
+        const node = _findNode(client.name)
+
+        const suffix = client._isConnected ? '' : ' (offline)'
+        node.metadata.label = node.clientName + suffix
       }
     }
   })
