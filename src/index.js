@@ -10,7 +10,7 @@ require('font-awesome/css/font-awesome.min.css')
 Polymer.veiledElements = ['the-graph-editor']
 
 const { setupSpacebro, connectSpacebro } = require('./connectSpacebro')
-const { connectUi } = require('./connectUi')
+const { animateConnection, connectUi } = require('./connectUi')
 const { CachedGraph } = require('./CachedGraph')
 
 window.addEventListener('polymer-ready', function () {
@@ -39,6 +39,10 @@ window.addEventListener('polymer-ready', function () {
 
   connectSpacebro(spacebroClient, graph)
   connectUi(editor, graph)
+
+  spacebroClient.on('connectionUsed', (connection) => {
+    animateConnection(editor, connection)
+  })
 
   // Autolayout button
   document.getElementById('autolayout').addEventListener('click', () => {

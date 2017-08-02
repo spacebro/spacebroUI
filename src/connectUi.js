@@ -1,5 +1,28 @@
 'use strict'
 
+function _findNode (editor, name) {
+  return editor.graph.nodes.find(nodeData => nodeData.clientName === name)
+}
+
+function _findNodeFromId (editor, id) {
+  return editor.graph.nodes.find(node => node.id === id)
+}
+
+function _getEdge (editor, connection) {
+  let srcNode = _findNode(editor, connection.src.clientName)
+  let tgtNode = _findNode(editor, connection.tgt.clientName)
+
+  if (!srcNode || !tgtNode) {
+    return null
+  }
+  return [
+    srcNode.id,
+    connection.src.eventName,
+    tgtNode.id,
+    connection.tgt.eventName,
+  ]
+}
+
 function connectUi (editor, graph) {
   // From UI to CachedGraph
   editor.graph.on('addNode', (nodeData) => {
@@ -12,7 +35,7 @@ function connectUi (editor, graph) {
   })
 
   function _getNodeName (id) {
-    return editor.graph.nodes.find(node => node.id === id).clientName
+    return _findNodeFromId(editor, id).clientName
   }
 
   function _getConnection (edge) {
@@ -48,10 +71,6 @@ function connectUi (editor, graph) {
     return node
   }
 
-  function _findNode (name) {
-    return editor.graph.nodes.find(nodeData => nodeData.clientName === name)
-  }
-
   graph.on('ui-addClients', (clients) => {
     console.log('ui-addClients', clients)
     for (const client of clients) {
@@ -70,7 +89,7 @@ function connectUi (editor, graph) {
     for (const client of clients) {
       // editor.$.graph.library[client.name] = getComponentFromClient(client)
       if (client.name !== 'spacebroUI') {
-        const node = _findNode(client.name)
+        const node = _findNode(editor, client.name)
 
         const suffix = client._isConnected ? '' : ' (offline)'
         node.metadata.label = node.clientName + suffix
@@ -80,56 +99,37 @@ function connectUi (editor, graph) {
   graph.on('ui-removeClients', (clientNames) => {
     console.log('ui-removeClients', clientNames)
     for (const name of clientNames) {
-      const node = _findNode(name)
+      const node = _findNode(editor, name)
       node && editor.graph.removeNode(node.id)
     }
   })
 
-  function _getEdge (connection, getId) {
-    let srcNode = _findNode(connection.src.clientName)
-    let tgtNode = _findNode(connection.tgt.clientName)
-
-    if (!srcNode || !tgtNode) {
-      return null
-    }
-    return [
-      srcNode.id,
-      connection.src.eventName,
-      tgtNode.id,
-      connection.tgt.eventName,
-    ]
-  }
-
   graph.on('ui-addConnections', (connections) => {
     console.log('ui-addConnections', connections)
     for (const connection of connections) {
-      const edge = _getEdge(connection, true)
+      const edge = _getEdge(editor, connection, true)
 
-      console.log('edge:', edge)
       edge && editor.graph.addEdge(...edge, { route: 2 })
     }
   })
   graph.on('ui-removeConnections', (connections) => {
     console.log('ui-removeConnections', connections)
     for (const connection of connections) {
-      const edge = _getEdge(connection, false)
+      const edge = _getEdge(editor, connection, false)
 
       edge && editor.graph.removeEdge(...edge)
     }
   })
+}
 
-  // TODO
-  // ANIMATE CONNECTIONS
-  /*
-  spacebroClient.on(connection.src.eventName, (data) => {
-    if (data._from === connection.src.clientName) {
-      editor.animateEdge(newEdge)
-      setTimeout(() => { editor.unanimateEdge(newEdge) }, 4000)
-    }
-  })
-  */
+function animateConnection (editor, connection) {
+  const edge = _getEdge(editor, connection)
+
+  editor.animateEdge(edge)
+  setTimeout(() => { editor.unanimateEdge(edge) }, 4000)
 }
 
 module.exports = {
-  connectUi
+  connectUi,
+  animateConnection
 }
