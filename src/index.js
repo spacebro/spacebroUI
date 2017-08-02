@@ -13,6 +13,8 @@ const { setupSpacebro, connectSpacebro } = require('./connectSpacebro')
 const { animateConnection, connectUi } = require('./connectUi')
 const { CachedGraph } = require('./CachedGraph')
 
+const { setSidebar } = require('./sidebar')
+
 window.addEventListener('polymer-ready', function () {
   const fbpGraph = window.TheGraph.fbpGraph
 
@@ -28,7 +30,7 @@ window.addEventListener('polymer-ready', function () {
 
   // Resize to fill window and also have explicit w/h attributes
   function resize () {
-    editor.setAttribute('width', window.innerWidth)
+    editor.setAttribute('width', window.innerWidth * 75 / 100)
     editor.setAttribute('height', window.innerHeight)
   }
   window.addEventListener('resize', resize)
@@ -39,6 +41,12 @@ window.addEventListener('polymer-ready', function () {
 
   connectSpacebro(spacebroClient, graph)
   connectUi(editor, graph)
+
+  const events = ['sb-removeClients', 'ui-addClients', 'ui-removeClients']
+  const sidebar = document.getElementById('sidebar')
+  for (const event of events) {
+    graph.on(event, () => setSidebar(sidebar, graph._clients))
+  }
 
   spacebroClient.on('connectionUsed', (connection) => {
     animateConnection(editor, connection)
