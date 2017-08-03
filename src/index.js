@@ -11,9 +11,8 @@ Polymer.veiledElements = ['the-graph-editor']
 
 const { setupSpacebro, connectSpacebro } = require('./connectSpacebro')
 const { animateConnection, connectUi } = require('./connectUi')
+const { getSidebarItems, connectSidebar } = require('./connectSidebar')
 const { CachedGraph } = require('./CachedGraph')
-
-const { setSidebar } = require('./sidebar')
 
 window.addEventListener('polymer-ready', function () {
   const fbpGraph = window.TheGraph.fbpGraph
@@ -38,15 +37,11 @@ window.addEventListener('polymer-ready', function () {
 
   const spacebroClient = setupSpacebro()
   const graph = new CachedGraph()
+  const sidebarItems = getSidebarItems()
 
   connectSpacebro(spacebroClient, graph)
   connectUi(editor, graph)
-
-  const events = ['sb-removeClients', 'ui-addClients', 'ui-removeClients']
-  const sidebar = document.getElementById('sidebar')
-  for (const event of events) {
-    graph.on(event, () => setSidebar(sidebar, graph._clients))
-  }
+  connectSidebar(document.getElementById('sidebar'), sidebarItems, graph)
 
   spacebroClient.on('connectionUsed', (connection) => {
     animateConnection(editor, connection)
