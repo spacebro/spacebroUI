@@ -23,12 +23,50 @@ function _getEdge (editor, connection) {
   ]
 }
 
+function _getComponentFromClient (client) {
+  let node
+
+  if (client.name && client.name.startsWith('ui-')) {
+    node = {
+      name: client.name,
+      description: 'UI component',
+      icon: 'cog',
+    }
+  } else if (!client._isConnected) {
+    node = {
+      name: `${client.name} (disconnected)`,
+      description: 'Client (disconnected)',
+      icon: 'minus-circle',
+    }
+  } else {
+    node = {
+      name: client.name,
+      description: 'Client',
+      icon: 'eye',
+    }
+  }
+
+  function _toNodePort (event) {
+    return {
+      name: event.eventName,
+      type: event.type
+    }
+  }
+
+  return Object.assign(
+    {},
+    node,
+    client,
+    {
+      inports: (client.in || []).map(_toNodePort),
+      outports: (client.out || []).map(_toNodePort),
+      name: node.name
+    }
+  )
+}
+
 function connectUi (editor, graph) {
   // From UI to CachedGraph
-  editor.graph.on('addNode', (nodeData) => {
-    console.log('Removing node:', nodeData)
-    graph.removeClients([ nodeData.name ], false, true)
-  })
   editor.graph.on('removeNode', (nodeData) => {
     console.log('Removing node:', nodeData.clientName)
     graph.removeClients([ nodeData.clientName ], false, true)
@@ -60,10 +98,7 @@ function connectUi (editor, graph) {
   function _addNode (clientName) {
     const id = Math.round(Math.random() * 100000).toString(36)
 
-    // TODO
-    // return editor.graph.addNode(id, clientName, metadata = {
-    const node = editor.graph.addNode(id, 'tall', {
-      label: clientName,
+    const node = editor.graph.addNode(id, clientName, {
       x: Math.round(Math.random() * 800),
       y: Math.round(Math.random() * 600)
     })
@@ -71,29 +106,23 @@ function connectUi (editor, graph) {
     return node
   }
 
+  const library = editor.$.graph.library
+
   graph.on('ui-addClients', (clients) => {
     console.log('ui-addClients', clients)
     for (const client of clients) {
-      // editor.$.graph.library[client.name] = getComponentFromClient(client)
+      library[client.name] = _getComponentFromClient(client)
       if (client.name !== 'spacebroUI') {
         const node = _addNode(client.name)
-
-        if (!client._isConnected) {
-          node.metadata.label = node.clientName + ' (offline)'
-        }
+        node.metadata.label = library[client.name].name
       }
     }
   })
   graph.on('ui-updateClients', (clients) => {
     console.log('ui-updateClients', clients)
     for (const client of clients) {
-      // editor.$.graph.library[client.name] = getComponentFromClient(client)
-      if (client.name !== 'spacebroUI') {
-        const node = _findNode(editor, client.name)
-
-        const suffix = client._isConnected ? '' : ' (offline)'
-        node.metadata.label = node.clientName + suffix
-      }
+      library[client.name] = _getComponentFromClient(client)
+      _findNode(editor, client.name).metadata.label = library[client.name].name
     }
   })
   graph.on('ui-removeClients', (clientNames) => {
