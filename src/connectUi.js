@@ -152,10 +152,18 @@ function connectUi (editor, graph) {
 }
 
 function animateConnection (editor, connection) {
-  const edge = _getEdge(editor, connection)
+  const srcNode = _findNode(editor, connection.src.clientName)
+  const tgtNode = _findNode(editor, connection.tgt.clientName)
+  const edge = editor.graph.edges.find(e => (
+    e.from.node === srcNode.id &&
+    e.from.port === connection.src.eventName &&
+    e.to.node === tgtNode.id &&
+    e.to.port === connection.tgt.eventName
+  ))
 
+  console.log('edge:', edge)
   editor.animateEdge(edge)
-  setTimeout(() => { editor.unanimateEdge(edge) }, 4000)
+  setTimeout(() => { editor.unanimateEdge(edge) }, 1000)
 }
 
 module.exports = {
