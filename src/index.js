@@ -11,7 +11,7 @@ Polymer.veiledElements = ['the-graph-editor']
 
 const { setupSpacebro, connectSpacebro } = require('./connectSpacebro')
 const { animateConnection, connectUi } = require('./connectUi')
-const { getSidebarItems, connectSidebar } = require('./connectSidebar')
+const { getSidebarItems, connectSidebar, updateHtml } = require('./connectSidebar')
 const { CachedGraph } = require('./CachedGraph')
 
 window.addEventListener('polymer-ready', function () {
@@ -37,13 +37,35 @@ window.addEventListener('polymer-ready', function () {
   const spacebroClient = setupSpacebro()
   const graph = new CachedGraph()
   const sidebarItems = getSidebarItems()
+  const sidebarDom = document.getElementById('sidebar')
 
   connectSpacebro(spacebroClient, graph)
   connectUi(editor, graph)
-  connectSidebar(document.getElementById('sidebar'), sidebarItems, graph)
+  connectSidebar(sidebarDom, sidebarItems, graph)
 
   spacebroClient.on('connectionUsed', (connection) => {
     animateConnection(editor, connection)
+  })
+
+  spacebroClient.on('uiEvent', (data) => {
+    const { target, args } = data
+    const item = sidebarItems[target.clientName]
+
+    console.log(target, args)
+
+    item && item.apply(target.eventName, args)
+    updateHtml(sidebarDom, sidebarItems)
+  })
+
+  // Add text box button
+  document.getElementById('addtextbox').addEventListener('click', () => {
+    graph.addClients({
+      'ui-textbox-0': {
+        name: 'ui-textbox-0',
+        type: 'ui-textbox',
+        in: [ { eventName: "in", type: "all" } ]
+      }
+    }, true, true)
   })
 
   // Autolayout button

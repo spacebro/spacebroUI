@@ -26,7 +26,7 @@ function _getEdge (editor, connection) {
 function _getComponentFromClient (client) {
   let node
 
-  if (client.name && client.name.startsWith('ui-')) {
+  if ((client.type || '').startsWith('ui-')) {
     node = {
       name: client.name,
       description: 'UI component',
@@ -161,9 +161,8 @@ function animateConnection (editor, connection) {
     e.to.port === connection.tgt.eventName
   ))
 
-  console.log('edge:', edge)
   editor.animateEdge(edge)
-  setTimeout(() => { editor.unanimateEdge(edge) }, 1000)
+  setTimeout(() => { editor.unanimateEdge(edge) }, 3000)
 }
 
 module.exports = {

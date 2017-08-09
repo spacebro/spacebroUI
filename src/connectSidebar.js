@@ -1,10 +1,29 @@
 'use strict'
 
 function getSidebarItems () {
-  return []
+  return {}
 }
 
-const ItemTypes = {}
+class TextBox {
+  constructor (client) {
+    this.name = client.name
+    this.text = 'No text'
+  }
+
+  apply (port, data) {
+    this.text = data.text
+  }
+
+  update (/* client */) {}
+
+  getHtml () {
+    return `<h1>${this.name}</h1>\n<p>${this.text}</p>\n`
+  }
+}
+
+const ItemTypes = {
+  'ui-textbox': TextBox
+}
 
 class TextLine {
   constructor (client) {
@@ -16,35 +35,31 @@ class TextLine {
   update (/* client */) {}
 
   getHtml () {
-    return `<p>${this.name}</p>\n`
+    return `<h1>${this.name}</h1>\n`
   }
 }
 
 function connectSidebar (sidebarDom, sidebarItems, graph) {
   function _addItem (client) {
-    const Item = ItemTypes[client.name]
+    const Item = ItemTypes[client.type]
 
     if (Item) {
-      sidebarItems.push(new Item(client))
+      sidebarItems[client.name] = new Item(client)
     } else {
-      sidebarItems.push(new TextLine(client))
+      sidebarItems[client.name] = new TextLine(client)
     }
   }
   graph.on('ui-addClients', (clients) => clients.forEach(_addItem))
   graph.on('sb-addClients', (clients) => clients.forEach(_addItem))
 
   function _removeItem (clientName) {
-    const clientId = sidebarItems.findIndex((item) => item.name === clientName)
-
-    if (clientId !== -1) {
-      sidebarItems.splice(clientId, 1)
-    }
+    delete sidebarItems[clientName]
   }
-  graph.on('ui-removeClients', (clientNames) => clientName.forEach(_removeItem))
-  graph.on('sb-removeClients', (clientNames) => clientName.forEach(_removeItem))
+  graph.on('ui-removeClients', (names) => names.forEach(_removeItem))
+  graph.on('sb-removeClients', (names) => names.forEach(_removeItem))
 
   function _updateItem (client) {
-    const item = sidebarItems.find((item) => item.name === client.name)
+    const item = sidebarItems[client.name]
 
     item && item.update(client)
   }
@@ -65,7 +80,7 @@ function connectSidebar (sidebarDom, sidebarItems, graph) {
 }
 
 function updateHtml (sidebarDom, sidebarItems) {
-  const innerHtml = sidebarItems
+  const innerHtml = Object.values(sidebarItems)
     .map((item) => item.getHtml())
     .join('\n')
   sidebarDom.innerHTML = innerHtml
@@ -73,5 +88,6 @@ function updateHtml (sidebarDom, sidebarItems) {
 
 module.exports = {
   getSidebarItems,
-  connectSidebar
+  connectSidebar,
+  updateHtml
 }

@@ -28,6 +28,10 @@ function connectSpacebro (spacebroClient, graph) {
   })
 
   // From CachedGraph to spacebro
+  graph.on('sb-addClients', (clients) => {
+    console.log('Emitting addClients:', clients)
+    spacebroClient.emit('addClients', clients)
+  })
   graph.on('sb-removeClients', (clientNames) => {
     console.log('Emitting removeClients:', clientNames)
     spacebroClient.emit('removeClients', clientNames)
