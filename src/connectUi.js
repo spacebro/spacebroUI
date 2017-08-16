@@ -58,8 +58,8 @@ function _getComponentFromClient (client) {
     node,
     client,
     {
-      inports: (client.in || []).map(_toNodePort),
-      outports: (client.out || []).map(_toNodePort),
+      inports: Object.values(client.in || {}).map(_toNodePort),
+      outports: Object.values(client.out || {}).map(_toNodePort),
       name: node.name
     }
   )

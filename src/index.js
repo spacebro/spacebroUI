@@ -63,7 +63,18 @@ window.addEventListener('polymer-ready', function () {
       'ui-textbox-0': {
         name: 'ui-textbox-0',
         type: 'ui-textbox',
-        in: [ { eventName: "in", type: "all" } ]
+        in: { in: { eventName: "in", type: "all" } }
+      }
+    }, true, true)
+  })
+
+  // Add image box button
+  document.getElementById('addimagebox').addEventListener('click', () => {
+    graph.addClients({
+      'ui-imagebox-0': {
+        name: 'ui-imagebox-0',
+        type: 'ui-imagebox',
+        in: { in: { eventName: "in", type: "all" } }
       }
     }, true, true)
   })
@@ -82,4 +93,6 @@ window.addEventListener('polymer-ready', function () {
   document.getElementById('clear').addEventListener('click', () => {
     graph.setConnections([], true, true)
   })
+
+  setTimeout(() => editor.triggerAutolayout(), 300)
 })

@@ -14,15 +14,40 @@ class TextBox {
     this.text = data.text
   }
 
-  update (/* client */) {}
+  update (client) {
+    this.name = client.name
+  }
 
   getHtml () {
     return `<h1>${this.name}</h1>\n<p>${this.text}</p>\n`
   }
 }
 
+class ImageBox {
+  constructor (client) {
+    this.name = client.name
+    this.url = ""
+  }
+
+  apply (port, data) {
+    this.url = data.url
+  }
+
+  update (client) {
+    this.name = client.name
+  }
+
+  getHtml () {
+    return ```
+      <h1>${this.name}</h1>
+      <img src='${this.url}'/>
+    ```
+  }
+}
+
 const ItemTypes = {
-  'ui-textbox': TextBox
+  'ui-textbox': TextBox,
+  'ui-imagebox': ImageBox
 }
 
 class TextLine {
@@ -32,7 +57,9 @@ class TextLine {
 
   apply (/* port, data */) {}
 
-  update (/* client */) {}
+  update (client) {
+    this.name = client.name
+  }
 
   getHtml () {
     return `<h1>${this.name}</h1>\n`
