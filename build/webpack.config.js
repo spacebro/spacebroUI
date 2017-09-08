@@ -5,6 +5,8 @@ const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
+const settings = require('standard-settings').getSettings()
+
 module.exports = {
   entry: [
     path.resolve(__dirname, '../src/index.js')
@@ -12,6 +14,14 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, '../dist'),
     filename: 'bundle.js'
+  },
+  externals: {
+    'standard-settings': {
+      amd: 'standard-settings',
+      root: 'standardSettings',
+      commonjs: 'standard-settings',
+      commonjs2: 'standard-settings'
+    }
   },
   module: {
     rules: [
@@ -66,6 +76,10 @@ module.exports = {
   plugins: [
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.HotModuleReplacementPlugin(),
+    new webpack.DefinePlugin({
+      'process.env.IS_WEB': 'true',
+      SETTINGS: JSON.stringify(settings)
+    }),
     new ExtractTextPlugin('style.css'),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, '../src/index.html'),
