@@ -66,6 +66,7 @@ window.addEventListener('polymer-ready', function () {
         in: { in: { eventName: "in", type: "all" } }
       }
     }, true, true)
+    setTimeout(() => editor.triggerAutolayout(), 300)
   })
 
   // Add image box button
@@ -77,6 +78,7 @@ window.addEventListener('polymer-ready', function () {
         in: { in: { eventName: "in", type: "all" } }
       }
     }, true, true)
+    setTimeout(() => editor.triggerAutolayout(), 300)
   })
 
   // Autolayout button

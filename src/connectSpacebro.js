@@ -21,10 +21,12 @@ function connectSpacebro (spacebroClient, graph) {
   spacebroClient.on('clients', (clients) => {
     console.log('Setting clients:', clients)
     graph.setClients(clients, true, false)
+    setTimeout(() => document.getElementById('editor').triggerAutolayout(), 300)
   })
   spacebroClient.on('connections', (connections) => {
     console.log('Setting connections:', connections)
     graph.setConnections(connections, true, false)
+    setTimeout(() => document.getElementById('editor').triggerAutolayout(), 300)
   })
 
   // From CachedGraph to spacebro

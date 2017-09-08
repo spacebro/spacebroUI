@@ -2,7 +2,7 @@
   "service": {
     "spacebro": {
       "host": "localhost",
-      "port": 6060,
+      "port": 36000,
       "client": {
         "name": "spacebroUI"
       },

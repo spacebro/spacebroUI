@@ -11,7 +11,7 @@ class TextBox {
   }
 
   apply (port, data) {
-    this.text = data.text
+    this.text = JSON.stringify(data, null, 2)
   }
 
   update (client) {
@@ -19,7 +19,7 @@ class TextBox {
   }
 
   getHtml () {
-    return `<h1>${this.name}</h1>\n<p>${this.text}</p>\n`
+    return '<h1>' + this.name + '</h1>\n<p>' + this.text + '</p>\n'
   }
 }
 
@@ -38,10 +38,7 @@ class ImageBox {
   }
 
   getHtml () {
-    return ```
-      <h1>${this.name}</h1>
-      <img src='${this.url}'/>
-    ```
+    return '<h1>' + this.name + '</h1><img src=\'' + this.url +'\'/><video controls autoplay autoloop src=\'' + this.url +'\'/>'
   }
 }
 

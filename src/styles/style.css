@@ -41,3 +41,12 @@ body {
   width: 25vw;
   background-color: White;
 }
+
+#sidebar img {
+  width: 98%;
+  margin: 1%
+}
+#sidebar video {
+  width: 98%;
+  margin: 1%
+}
