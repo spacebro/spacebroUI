@@ -19,7 +19,7 @@ function _getEdge (editor, connection) {
     srcNode.id,
     connection.src.eventName,
     tgtNode.id,
-    connection.tgt.eventName,
+    connection.tgt.eventName
   ]
 }
 
@@ -30,19 +30,19 @@ function _getComponentFromClient (client) {
     node = {
       name: client.name,
       description: 'UI component',
-      icon: 'cog',
+      icon: 'cog'
     }
   } else if (!client._isConnected) {
     node = {
       name: `${client.name} (disconnected)`,
       description: 'Client (disconnected)',
-      icon: 'minus-circle',
+      icon: 'minus-circle'
     }
   } else {
     node = {
       name: client.name,
       description: 'Client',
-      icon: 'eye',
+      icon: 'eye'
     }
   }
 
@@ -160,12 +160,25 @@ function animateConnection (editor, connection) {
     e.to.node === tgtNode.id &&
     e.to.port === connection.tgt.eventName
   ))
-
   editor.animateEdge(edge)
   setTimeout(() => { editor.unanimateEdge(edge) }, 3000)
 }
 
+function animateConnectionFromSource (editor, source) {
+  const srcNode = _findNode(editor, source.clientName)
+  const edges = editor.graph.edges.filter(e => (
+    e.from.node === srcNode.id &&
+    e.from.port === source.eventName
+  ))
+
+  for (let edge of edges) {
+    editor.animateEdge(edge)
+    setTimeout(() => { editor.unanimateEdge(edge) }, 3000)
+  }
+}
+
 module.exports = {
   connectUi,
-  animateConnection
+  animateConnection,
+  animateConnectionFromSource
 }

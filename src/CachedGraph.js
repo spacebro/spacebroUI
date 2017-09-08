@@ -73,6 +73,7 @@ class CachedGraph extends EventEmitter {
       this._connections = connections.slice()
       updateUi && this.emit('ui-addConnections', added)
       updateSb && this.emit('sb-addConnections', added)
+      this.emit('addConnections', added)
     }
   }
 
@@ -83,6 +84,7 @@ class CachedGraph extends EventEmitter {
     if (removed.length) {
       updateUi && this.emit('ui-removeConnections', removed)
       updateSb && this.emit('sb-removeConnections', removed)
+      this.emit('removeConnections', removed)
     }
   }
 

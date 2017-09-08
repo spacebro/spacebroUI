@@ -10,7 +10,7 @@ require('font-awesome/css/font-awesome.min.css')
 Polymer.veiledElements = ['the-graph-editor']
 
 const { setupSpacebro, connectSpacebro } = require('./connectSpacebro')
-const { animateConnection, connectUi } = require('./connectUi')
+const { animateConnectionFromSource, connectUi } = require('./connectUi')
 const { getSidebarItems, connectSidebar, updateHtml } = require('./connectSidebar')
 const { CachedGraph } = require('./CachedGraph')
 
@@ -43,8 +43,26 @@ window.addEventListener('polymer-ready', function () {
   connectUi(editor, graph)
   connectSidebar(sidebarDom, sidebarItems, graph)
 
-  spacebroClient.on('connectionUsed', (connection) => {
-    animateConnection(editor, connection)
+  graph.on('addConnections', (connections) => {
+    // listen on these events to animate edges
+    for (let connection of connections) {
+      spacebroClient.on(connection.src.eventName, (data) => {
+        animateConnectionFromSource(editor, connection.src)
+      })
+    }
+  })
+  graph.on('removeConnections', (connections) => {
+    // remove listening when no more connection on this event
+    for (let connection of connections) {
+      const srcNode = editor.graph.nodes.find(nodeData => nodeData.clientName === connection.src.clientName)
+      const edge = editor.graph.edges.find(e => (
+        e.from.node === srcNode.id &&
+        e.from.port === connection.src.eventName
+      ))
+      if (!edge) {
+        spacebroClient.off(connection.src.eventName)
+      }
+    }
   })
 
   spacebroClient.on('uiEvent', (data) => {
@@ -63,7 +81,7 @@ window.addEventListener('polymer-ready', function () {
       'ui-textbox-0': {
         name: 'ui-textbox-0',
         type: 'ui-textbox',
-        in: { in: { eventName: "in", type: "all" } }
+        in: { in: { eventName: 'in', type: 'all' } }
       }
     }, true, true)
     setTimeout(() => editor.triggerAutolayout(), 300)
@@ -75,7 +93,7 @@ window.addEventListener('polymer-ready', function () {
       'ui-imagebox-0': {
         name: 'ui-imagebox-0',
         type: 'ui-imagebox',
-        in: { in: { eventName: "in", type: "all" } }
+        in: { in: { eventName: 'in', type: 'all' } }
       }
     }, true, true)
     setTimeout(() => editor.triggerAutolayout(), 300)
