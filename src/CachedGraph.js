@@ -3,7 +3,7 @@
 const EventEmitter = require('events')
 const deepEqual = require('deep-equal')
 
-function _deepFind(array, obj) {
+function _deepFind (array, obj) {
   return array.find(o => deepEqual(o, obj))
 }
 

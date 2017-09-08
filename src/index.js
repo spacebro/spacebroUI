@@ -48,6 +48,11 @@ window.addEventListener('polymer-ready', function () {
     for (let connection of connections) {
       spacebroClient.on(connection.src.eventName, (data) => {
         animateConnectionFromSource(editor, connection.src)
+        if (connection.tgt.clientName.startsWith('ui-')) {
+          const item = sidebarItems[connection.tgt.clientName]
+          item && item.apply(connection.tgt.eventName, data)
+          updateHtml(sidebarDom, sidebarItems)
+        }
       })
     }
   })
@@ -63,16 +68,6 @@ window.addEventListener('polymer-ready', function () {
         spacebroClient.off(connection.src.eventName)
       }
     }
-  })
-
-  spacebroClient.on('uiEvent', (data) => {
-    const { target, args } = data
-    const item = sidebarItems[target.clientName]
-
-    console.log(target, args)
-
-    item && item.apply(target.eventName, args)
-    updateHtml(sidebarDom, sidebarItems)
   })
 
   // Add text box button
