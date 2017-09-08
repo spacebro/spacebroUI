@@ -26,7 +26,7 @@ class TextBox {
 class ImageBox {
   constructor (client) {
     this.name = client.name
-    this.url = ""
+    this.url = ''
   }
 
   apply (port, data) {
@@ -38,7 +38,7 @@ class ImageBox {
   }
 
   getHtml () {
-    return '<h1>' + this.name + '</h1><img src=\'' + this.url +'\'/><video controls autoplay autoloop src=\'' + this.url +'\'/>'
+    return '<h1>' + this.name + '</h1><img src=\'' + this.url + '\'/><video controls autoplay autoloop src=\'' + this.url + '\'></video>'
   }
 }
 

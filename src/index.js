@@ -72,25 +72,27 @@ window.addEventListener('polymer-ready', function () {
 
   // Add text box button
   document.getElementById('addtextbox').addEventListener('click', () => {
-    graph.addClients({
-      'ui-textbox-0': {
-        name: 'ui-textbox-0',
-        type: 'ui-textbox',
-        in: { in: { eventName: 'in', type: 'all' } }
-      }
-    }, true, true)
+    let name = 'ui-textbox-0' + Math.floor(Math.random() * 10000)
+    let clients = {}
+    clients[name] = {
+      name: name,
+      type: 'ui-textbox',
+      in: { in: { eventName: 'in', type: 'all' } }
+    }
+    graph.addClients(clients, true, true)
     setTimeout(() => editor.triggerAutolayout(), 300)
   })
 
   // Add image box button
   document.getElementById('addimagebox').addEventListener('click', () => {
-    graph.addClients({
-      'ui-imagebox-0': {
-        name: 'ui-imagebox-0',
-        type: 'ui-imagebox',
-        in: { in: { eventName: 'in', type: 'all' } }
-      }
-    }, true, true)
+    let name = 'ui-imagebox-0' + Math.floor(Math.random() * 10000)
+    let clients = {}
+    clients[name] = {
+      name: name,
+      type: 'ui-imagebox',
+      in: { in: { eventName: 'in', type: 'all' } }
+    }
+    graph.addClients(clients, true, true)
     setTimeout(() => editor.triggerAutolayout(), 300)
   })
 
