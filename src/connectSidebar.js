@@ -19,7 +19,7 @@ class TextBox {
   }
 
   getHtml () {
-    return '<h1>' + this.name + '</h1>\n<p>' + this.text + '</p>\n'
+    return '<h2>' + this.name + '</h2>\n<p>' + this.text + '</p>\n'
   }
 }
 
@@ -38,7 +38,7 @@ class ImageBox {
   }
 
   getHtml () {
-    return '<h1>' + this.name + '</h1><img src=\'' + this.url + '\'/><video controls autoplay autoloop src=\'' + this.url + '\'></video>'
+    return '<h2>' + this.name + '</h2><img src=\'' + this.url + '\'/><video controls autoplay autoloop src=\'' + this.url + '\'></video>'
   }
 }
 
@@ -59,7 +59,7 @@ class TextLine {
   }
 
   getHtml () {
-    return `<h1>${this.name}</h1>\n`
+    return `<h2>${this.name}</h2>\n`
   }
 }
 

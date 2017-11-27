@@ -37,7 +37,7 @@ window.addEventListener('polymer-ready', function () {
   const spacebroClient = setupSpacebro()
   const graph = new CachedGraph()
   const sidebarItems = getSidebarItems()
-  const sidebarDom = document.getElementById('sidebar')
+  const sidebarDom = document.getElementById('sidebarItems')
 
   connectSpacebro(spacebroClient, graph)
   connectUi(editor, graph)

@@ -2,8 +2,28 @@
 
 const { SpacebroClient, setDefaultSettings } = require('spacebro-client')
 
+function getChannelName () {
+  var channelName = window.location.hash
+  if (channelName !== '') {
+    channelName = channelName.replace('/', '').replace('#', '')
+  }
+  return channelName
+}
+
 function setupSpacebro () {
-  setDefaultSettings(SETTINGS.service.spacebro, true)
+  const channelName = getChannelName()
+  var spacebroSettings = JSON.parse(JSON.stringify(SETTINGS.service.spacebro))
+  if (channelName !== '') {
+    spacebroSettings.channelName = channelName
+  }
+  // dirty show channel
+  const text = 'Channel: ' + spacebroSettings.channelName
+  const sidebarDom = document.getElementById('sidebar')
+  const h = document.createElement('h1')
+  h.prepend(text)
+  sidebarDom.prepend(h)
+
+  setDefaultSettings(spacebroSettings, true)
   // Connect to spacebro
   const spacebroClient = new SpacebroClient()
 
