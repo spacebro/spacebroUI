@@ -14,6 +14,10 @@ const { animateConnectionFromSource, connectUi } = require('./connectUi')
 const { getSidebarItems, connectSidebar, updateHtml } = require('./connectSidebar')
 const { CachedGraph } = require('./CachedGraph')
 
+window.onhashchange = function () {
+  window.location.reload()
+}
+
 window.addEventListener('polymer-ready', function () {
   const fbpGraph = window.TheGraph.fbpGraph
 
